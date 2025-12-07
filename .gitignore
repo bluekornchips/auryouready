@@ -1,0 +1,7 @@
+.cursor
+.vscode
+
+**/pkg/
+**.deb
+**/*.tar.**
+code.sh

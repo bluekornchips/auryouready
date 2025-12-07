@@ -1,0 +1,22 @@
+pkgname=cursor-bin
+pkgver=2.1.50
+pkgrel=1
+pkgdesc="Cursor binary release"
+arch=('x86_64')
+url="https://www.cursor.com"
+license=('LicenseRef-Cursor_EULA')
+depends=('gtk3' 'libxss' 'libsecret' 'nss' 'libnotify' 'libxkbfile' 'xdg-utils' 'gcc-libs' 'glibc' 'hicolor-icon-theme')
+_commit=56f0a83df8e9eb48585fcc4858a9440db4cc7771
+source=("https://downloads.cursor.com/production/${_commit}/linux/x64/deb/amd64/deb/cursor_${pkgver}_amd64.deb")
+sha512sums=('SKIP')
+noextract=(cursor_${pkgver}_amd64.deb)
+
+package() {
+  # Unpack the upstream deb into the package directory
+  bsdtar -xOf "${noextract[0]}" data.tar.xz | tar -xJf - -C "$pkgdir"
+  # Provide a simple launcher on PATH
+  install -d "$pkgdir/usr/bin"
+  ln -sf /usr/share/cursor/cursor "$pkgdir/usr/bin/cursor"
+}
+
+
