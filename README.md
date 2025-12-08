@@ -6,6 +6,7 @@ Workspace for user-specific AUR-style packages. Each package lives in its own fo
 
 - `cursor-bin/PKGBUILD` – real package wrapping Cursor’s upstream deb while using system Electron.
 - `examples/hello-world/PKGBUILD` – minimal starter; pairs with `examples/hello-world/hello.sh`.
+- `signal-desktop-bin/PKGBUILD` – official Signal Desktop binary repack sourced from the upstream apt repository.
 
 ## Requirements
 
@@ -34,6 +35,17 @@ makepkg -si
 makepkg -C
 ```
 
+## Redirect build artifacts per package
+
+To keep build outputs under each package directory, run makepkg with per-invocation destinations:
+
+```
+PKGDEST="$PWD/artifacts/pkg" SRCDEST="$PWD/artifacts/src" \
+LOGDEST="$PWD/artifacts/logs" BUILDDIR="$PWD/artifacts/build" makepkg -Csi
+```
+
+This keeps packages, sources, logs, and build trees inside `artifacts/` for the current package.
+
 ## Example: hello-world (starter)
 
 - Installs a tiny `hello-world` script for reference.
@@ -50,6 +62,18 @@ makepkg -si
 ```
 
 Confirm checksums before publishing.
+
+## Example: signal-desktop-bin (Signal)
+
+- Pulls the official `signal-desktop` deb from `updates.signal.org` with a pinned checksum.
+- Build from `signal-desktop-bin/`:
+
+```
+cd signal-desktop-bin
+makepkg -si
+```
+
+Upstream publishes Debian/Ubuntu instructions (add signing key, add the apt source, then `apt install signal-desktop`). This package consumes the same deb directly for Arch-style installations, so no extra repository setup is required. The checksum guards the download in place of the apt key step.
 
 ## Why keep this structure
 

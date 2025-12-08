@@ -1,7 +1,27 @@
 .cursor
 .vscode
 
+# makepkg artifacts
 **/pkg/
-**.deb
-**/*.tar.**
+**/src/
+**/artifacts/
+*.pkg.tar.*
+*.src.tar.*
+*.deb
+*.AppImage
+
+# compressed archives from builds
+*.tar.zst
+*.tar.xz
+*.tar.gz
+*.tar.bz2
+
+# allow required build descriptors and helper files
+!**/PKGBUILD
+!**/*.install
+!**/*.patch
+!**/*.conf
+!**/*.service
+
+# local helper scripts
 code.sh
