@@ -1,0 +1,47 @@
+# shellcheck shell=bash disable=SC2034,SC2154,SC2086,SC2206
+pkgname=google-chrome-bin
+pkgver=131.0.6778.85
+pkgrel=1
+pkgdesc="The popular and trusted web browser by Google (official binary release repack)"
+arch=('x86_64')
+url="https://www.google.com/chrome/"
+license=('custom:chrome')
+depends=(
+  'alsa-lib'
+  'gcc-libs'
+  'glibc'
+  'gtk3'
+  'libcups'
+  'libdrm'
+  'libx11'
+  'libxcb'
+  'libxcomposite'
+  'libxcursor'
+  'libxdamage'
+  'libxext'
+  'libxfixes'
+  'libxi'
+  'libxrandr'
+  'libxrender'
+  'libxss'
+  'libxtst'
+  'mesa'
+  'nss'
+  'pango'
+  'xdg-utils'
+)
+provides=('google-chrome')
+conflicts=('google-chrome')
+source=("https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb")
+noextract=(google-chrome-stable_current_amd64.deb)
+sha512sums=('SKIP')
+
+package() {
+  # Unpack the upstream deb directly into the package root
+  bsdtar -xOf "${noextract[0]}" data.tar.xz | tar -xJf - -C "$pkgdir"
+  
+  # Install license
+  install -d "$pkgdir/usr/share/licenses/$pkgname"
+  mv "$pkgdir/opt/google/chrome/LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE" 2>/dev/null || true
+}
+
