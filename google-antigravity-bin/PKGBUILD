@@ -1,0 +1,50 @@
+_debver=1.16.5-1770081357
+pkgver=1.16.5_1770081357
+pkgrel=1
+pkgdesc="Google Antigravity official binary release, repacked from Debian package"
+arch=('x86_64')
+url="https://antigravity.google"
+license=('custom')
+depends=(
+  'alsa-lib'
+  'at-spi2-core'
+  'cairo'
+  'curl'
+  'dbus'
+  'expat'
+  'gcc-libs'
+  'gdk-pixbuf2'
+  'glib2'
+  'glibc'
+  'gtk3'
+  'hicolor-icon-theme'
+  'libcups'
+  'libx11'
+  'libxcb'
+  'libxcomposite'
+  'libxdamage'
+  'libxext'
+  'libxfixes'
+  'libxkbcommon'
+  'libxkbfile'
+  'libxrandr'
+  'mesa'
+  'nspr'
+  'nss'
+  'pango'
+  'udev'
+  'xdg-utils'
+)
+provides=('antigravity')
+conflicts=('antigravity')
+_debfile="antigravity_${_debver}_amd64_1e91c55b802c42d27f931c53e68fc2ab.deb"
+source=("${_debfile}::https://us-central1-apt.pkg.dev/projects/antigravity-auto-updater-dev/pool/antigravity-debian/${_debfile}")
+noextract=("${_debfile}")
+sha256sums=('412b197ab4c417eb0144ebb6877794937e4d484659f348f19aa262c9c12c796c')
+
+package() {
+  bsdtar -xOf "${noextract[0]}" data.tar.xz | tar -xJf - -C "${pkgdir}"
+
+  install -d "${pkgdir}/usr/bin"
+  ln -sf /usr/share/antigravity/bin/antigravity "${pkgdir}/usr/bin/antigravity"
+}

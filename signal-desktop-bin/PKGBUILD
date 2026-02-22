@@ -1,4 +1,3 @@
-# shellcheck shell=bash disable=SC2034,SC2154,SC2086,SC2206
 pkgname=signal-desktop-bin
 pkgver=7.81.0
 pkgrel=1
@@ -19,7 +18,7 @@ depends=(
   'libx11'
   'libxss'
   'libxtst'
-  'mesa'        # provides libgbm
+  'mesa'
   'nss'
   'xdg-utils'
 )
@@ -30,6 +29,5 @@ noextract=(signal-desktop_${pkgver}_amd64.deb)
 sha512sums=('92e45619fc3636c081808399b856d52db71acedaad951bfbfa6911e3d5717a348fdd49ce2aa68e9bc5247091c51e3f5433008f79bca2d96c89049eac0752b44a')
 
 package() {
-  # Unpack the upstream deb directly into the package root
   bsdtar -xOf "${noextract[0]}" data.tar.xz | tar -xJf - -C "$pkgdir"
 }

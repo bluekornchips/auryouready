@@ -6,6 +6,7 @@ Workspace for user-specific AUR-style packages. Each package lives in its own fo
 
 - `cursor-bin` – Cursor IDE binary repack
 - `google-chrome-bin` – Google Chrome browser repack
+- `google-antigravity-bin` – Google Antigravity binary repack
 - `signal-desktop-bin` – Signal Desktop binary repack
 - `synology-drive-client-bin` – Synology Drive Client repack
 - `shfmt` – Shell parser/formatter (source build)

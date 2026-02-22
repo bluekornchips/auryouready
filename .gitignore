@@ -1,5 +1,6 @@
 .cursor
 .vscode
+.agent
 
 # makepkg artifacts
 **/pkg/

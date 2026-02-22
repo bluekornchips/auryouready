@@ -1,4 +1,3 @@
-# shellcheck shell=bash disable=SC2034,SC2154,SC2086,SC2206
 pkgname=synology-drive-client-bin
 pkgver=4.0.1.17885
 pkgrel=1
@@ -30,13 +29,5 @@ noextract=(synology-drive-client-17885.x86_64.deb)
 sha512sums=('SKIP')
 
 package() {
-  # Unpack the upstream deb directly into the package root
   bsdtar -xOf "${noextract[0]}" data.tar.xz | tar -xJf - -C "$pkgdir"
-  
-  # Install license if available
-  if [ -f "$pkgdir/opt/Synology/SynologyDrive/LICENSE" ]; then
-    install -d "$pkgdir/usr/share/licenses/$pkgname"
-    mv "$pkgdir/opt/Synology/SynologyDrive/LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE" 2>/dev/null || true
-  fi
 }
-
