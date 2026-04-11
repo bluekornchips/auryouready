@@ -1,6 +1,6 @@
 # shellcheck shell=bash disable=SC2034,SC2154,SC2086,SC2206
 pkgname=cursor-bin
-pkgver=3.0.12
+pkgver=3.0.16
 pkgrel=1
 pkgdesc="Cursor binary release"
 arch=('x86_64')
@@ -8,8 +8,9 @@ url="https://www.cursor.com"
 license=('LicenseRef-Cursor_EULA')
 depends=('gtk3' 'libxss' 'libsecret' 'nss' 'libnotify' 'libxkbfile' 'xdg-utils' 'gcc-libs' 'glibc' 'hicolor-icon-theme')
 _commit=56f0a83df8e9eb48585fcc4858a9440db4cc7771
+# Source: https://api2.cursor.sh/updates/download/golden/linux-x64-deb/cursor/3.0
 source=("cursor_${pkgver}_amd64.deb::https://api2.cursor.sh/updates/download/golden/linux-x64-deb/cursor/${pkgver}")
-sha512sums=('SKIP')
+sha512sums=('5ced36d531d7f118f636bbbd8aa0d46a5eb11455516f1a7537361e953ef1c888bd9c0e47c350eca4c6e585f2683cf90448c0be87fe2870ea983b3bf3aaf34294')
 noextract=(cursor_${pkgver}_amd64.deb)
 options=('!strip')
 

@@ -1,5 +1,6 @@
 .cursor
 .vscode
+.agent
 
 # makepkg artifacts
 **/pkg/
@@ -22,6 +23,3 @@
 !**/*.patch
 !**/*.conf
 !**/*.service
-
-# local helper scripts
-code.sh
