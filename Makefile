@@ -1,21 +1,22 @@
-.PHONY: clean help
+BIN_PACKAGES := signal-desktop-bin synology-drive-client-bin
+SHELL_FILES  := $(shell find . -name "*.sh" -type f)
 
-help:
-	@echo "Targets:"
-	@echo "  clean  Remove makepkg output and downloaded .deb files under each */PKGBUILD directory"
-	@echo "  help   Show this message"
+.PHONY: checksum clean \
+        signal synology-drive-client cursor shfmt
 
-clean:
-	@bash "$(CURDIR)/cleanup.sh"
-
-cursor:
-	@bash -c 'cd cursor-bin && makepkg -si'
-
-synology-drive-client:
-	@bash -c 'cd synology-drive-client-bin && makepkg -si'
+checksum:
+	./checksum.sh $(foreach t,$(BIN_PACKAGES),-t $(t))
 
 signal:
-	@bash -c 'cd signal-desktop-bin && makepkg -si'
+	cd signal-desktop-bin && makepkg -si
+
+synology-drive-client:
+	cd synology-drive-client-bin && makepkg -si
 
 shfmt:
-	@bash -c 'cd shfmt && makepkg -si'
+	cd shfmt && makepkg -si
+
+clean:
+	./cleanup.sh
+
+all: checksum clean signal synology-drive-client shfmt

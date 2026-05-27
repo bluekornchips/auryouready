@@ -1,6 +1,6 @@
 # shellcheck shell=bash disable=SC2034,SC2154,SC2086,SC2206
 pkgname=signal-desktop-bin
-pkgver=8.5.0
+pkgver=8.11.0
 pkgrel=1
 pkgdesc="Signal Private Messenger (official binary release repack)"
 arch=('x86_64')
@@ -27,7 +27,7 @@ provides=('signal-desktop')
 conflicts=('signal-desktop')
 source=("https://updates.signal.org/desktop/apt/pool/s/signal-desktop/signal-desktop_${pkgver}_amd64.deb")
 noextract=(signal-desktop_${pkgver}_amd64.deb)
-sha512sums=('d5d4d893d4a32a5aa805b745ee09bbb990087dc029fbf7319399841bea5c4391d19941f65f73427affccfb11176f8874515342caf3cded0a639de7462c5ae3c9')
+sha512sums=('b26acb321dd2b7ca7747bc0bd92ebffd4a980471d776895859304eb84df8ca53b23bfe7ffce3344df93cc97c6a6ad3a5131c2df035f5fdde4f52ea4b60e96ce0')
 
 package() {
   bsdtar -xOf "${noextract[0]}" data.tar.xz | tar -xJf - -C "$pkgdir"

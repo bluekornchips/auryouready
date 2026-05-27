@@ -1,6 +1,6 @@
 # shellcheck shell=bash disable=SC2034,SC2154,SC2086,SC2206
 pkgname=synology-drive-client-bin
-pkgver=4.0.1.17885
+pkgver=4.0.2.17889
 pkgrel=1
 pkgdesc="Synology Drive Client - Sync and backup files from your Synology NAS (official binary release repack)"
 arch=('x86_64')
@@ -25,9 +25,9 @@ depends=(
 )
 provides=('synology-drive-client')
 conflicts=('synology-drive-client')
-source=("https://global.synologydownload.com/download/Utility/SynologyDriveClient/4.0.1-17885/Ubuntu/Installer/synology-drive-client-17885.x86_64.deb")
-noextract=(synology-drive-client-17885.x86_64.deb)
-sha512sums=('SKIP')
+source=("https://global.synologydownload.com/download/Utility/SynologyDriveClient/4.0.2-17889/Ubuntu/Installer/synology-drive-client-17889.x86_64.deb")
+noextract=(synology-drive-client-17889.x86_64.deb)
+sha512sums=('5007e0359b588ea6251b51bd23a16f17547a0d85b281e4c6fc6eef7eb1ad5a157491b8b2a4d3a800673c73a26762f65a6520eb4c2f1e8f5c337f46606e054c27')
 
 package() {
   # Unpack the upstream deb directly into the package root
