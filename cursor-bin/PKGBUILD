@@ -1,0 +1,31 @@
+# shellcheck shell=bash disable=SC2034,SC2154,SC2086,SC2206
+pkgname=cursor-bin
+pkgver=3.5.38
+pkgrel=1
+pkgdesc="Cursor binary release"
+arch=('x86_64')
+url="https://www.cursor.com"
+license=('LicenseRef-Cursor_EULA')
+depends=(
+  'gcc-libs'
+  'glibc'
+  'gtk3'
+  'hicolor-icon-theme'
+  'libnotify'
+  'libsecret'
+  'libxkbfile'
+  'libxss'
+  'nss'
+  'xdg-utils'
+)
+_commit=009bb5a3600dd98fe1c1f25798f767f686e14759
+source=("cursor_${pkgver}_amd64.deb::https://downloads.cursor.com/production/${_commit}/linux/x64/deb/amd64/deb/cursor_${pkgver}_amd64.deb")
+noextract=(cursor_${pkgver}_amd64.deb)
+sha512sums=('061533592310bd035cdec06f5507e154b994b10b3375cd8a1f0c114ed4366f6e0531ed8645a5a88bdb84387ac94f5271b22c2ff647c9eb27e2c14bd351958b57')
+options=('!strip')
+
+package() {
+  bsdtar -xOf "${noextract[0]}" data.tar.xz | tar -xJf - -C "$pkgdir"
+  install -d "$pkgdir/usr/bin"
+  ln -sf /usr/share/cursor/cursor "$pkgdir/usr/bin/cursor"
+}
