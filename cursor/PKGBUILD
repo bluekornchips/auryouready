@@ -1,6 +1,5 @@
-# shellcheck shell=bash disable=SC2034,SC2154,SC2086,SC2206
 pkgname=cursor-bin
-pkgver=3.5.38
+pkgver=3.11.13
 pkgrel=1
 pkgdesc="Cursor binary release"
 arch=('x86_64')
@@ -18,10 +17,10 @@ depends=(
   'nss'
   'xdg-utils'
 )
-_commit=009bb5a3600dd98fe1c1f25798f767f686e14759
+_commit=3f21b08f0b436a07be29fbfe00b304fa15553353
 source=("cursor_${pkgver}_amd64.deb::https://downloads.cursor.com/production/${_commit}/linux/x64/deb/amd64/deb/cursor_${pkgver}_amd64.deb")
 noextract=(cursor_${pkgver}_amd64.deb)
-sha512sums=('061533592310bd035cdec06f5507e154b994b10b3375cd8a1f0c114ed4366f6e0531ed8645a5a88bdb84387ac94f5271b22c2ff647c9eb27e2c14bd351958b57')
+sha512sums=('45c3ec6532852a42b5e4324b7170422dfc0958e4398fcb553b4bf78b7c3df8718e7edaae6602b5df3c84c1aa3a40c05eb8bd1f4efbae4d6ad3b6bb79904ab0a2')
 options=('!strip')
 
 package() {

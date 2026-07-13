@@ -4,11 +4,11 @@ Workspace for user-specific AUR-style packages. Each package lives in its own fo
 
 ## Packages
 
-- `cursor-bin` – Cursor IDE binary repack
-- `signal-desktop-bin` – Signal Desktop binary repack
-- `synology-drive-client-bin` – Synology Drive Client repack
+- `cursor` – Cursor IDE binary repack (`cursor-bin`)
+- `signal-desktop` – Signal Desktop binary repack (`signal-desktop-bin`)
+- `synology-drive-client` – Synology Drive Client repack (`synology-drive-client-bin`)
+- `google-chrome` – Google Chrome binary repack (`google-chrome-bin`)
 - `shfmt` – Shell parser/formatter (source build)
-
 ## Root Makefile
 
 From the repository root, convenience targets wrap `makepkg -si` for some packages and run cleanup:
@@ -19,6 +19,7 @@ make clean             # remove makepkg outputs and downloaded .deb files under 
 make cursor
 make signal
 make synology-drive-client
+make google-chrome
 make shfmt
 ```
 
@@ -37,13 +38,13 @@ Arch Linux (or derivative) with `base-devel`. Tools: `git`, `fakeroot`, `bsdtar`
 ## Build a package
 
 ```bash
-cd cursor-bin   # or another package directory
+cd cursor   # or another package directory
 makepkg -si
 ```
 
 Or use the matching `make` target from the repo root, see above.
 
-Adjust the copy source to a package closest to what you need, for example a `-bin` repack versus a source build like `shfmt`.
+Adjust the copy source to a package closest to what you need, for example a binary repack versus a source build like `shfmt`.
 
 ## Redirect build artifacts
 

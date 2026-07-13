@@ -1,6 +1,5 @@
-# shellcheck shell=bash disable=SC2034,SC2154,SC2086,SC2206
 pkgname=synology-drive-client-bin
-pkgver=4.0.2.17889
+pkgver=4.0.3.17892
 pkgrel=1
 pkgdesc="Synology Drive Client - Sync and backup files from your Synology NAS (official binary release repack)"
 arch=('x86_64')
@@ -25,9 +24,9 @@ depends=(
 )
 provides=('synology-drive-client')
 conflicts=('synology-drive-client')
-source=("https://global.synologydownload.com/download/Utility/SynologyDriveClient/4.0.2-17889/Ubuntu/Installer/synology-drive-client-17889.x86_64.deb")
-noextract=(synology-drive-client-17889.x86_64.deb)
-sha512sums=('5007e0359b588ea6251b51bd23a16f17547a0d85b281e4c6fc6eef7eb1ad5a157491b8b2a4d3a800673c73a26762f65a6520eb4c2f1e8f5c337f46606e054c27')
+source=("https://global.synologydownload.com/download/Utility/SynologyDriveClient/4.0.3-17892/Ubuntu/Installer/synology-drive-client-17892.x86_64.deb")
+noextract=(synology-drive-client-17892.x86_64.deb)
+sha512sums=('ede19b2a7ceae48e9ab59614e00f7b9d77b82d54b8c4a4e44bfc2418998b3f04157a70ae6a822b434112cfb89a2278b305ee7e1607c4092d2b6867f4ab88ea70')
 
 package() {
   # Unpack the upstream deb directly into the package root
@@ -39,4 +38,3 @@ package() {
     mv "$pkgdir/opt/Synology/SynologyDrive/LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE" 2>/dev/null || true
   fi
 }
-
