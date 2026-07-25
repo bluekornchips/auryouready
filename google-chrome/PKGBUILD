@@ -1,10 +1,15 @@
+# shellcheck shell=bash disable=SC2034,SC2154
+
+# Metadata
 pkgname=google-chrome-bin
-pkgver=150.0.7871.114
+pkgver=150.0.7871.186
 pkgrel=1
 pkgdesc="The popular and trusted web browser by Google (official binary release repack)"
 arch=('x86_64')
 url="https://www.google.com/chrome/"
 license=('custom:chrome')
+
+# Dependencies
 depends=(
   'alsa-lib'
   'gcc-libs'
@@ -29,17 +34,26 @@ depends=(
   'pango'
   'xdg-utils'
 )
+
+# Relations
 provides=('google-chrome')
 conflicts=('google-chrome')
-source=("https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb")
-noextract=(google-chrome-stable_current_amd64.deb)
-sha512sums=('SKIP')
 
+# Options
+# empty
+
+# Sources
+source=("google-chrome-stable_${pkgver}_amd64.deb::https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb")
+noextract=("google-chrome-stable_${pkgver}_amd64.deb")
+sha512sums=('e9305be5b833860d03af4429856974369ba74a9ee18dabefd27a892ecbb454c725f4ef83b2b14330334599143a1098d9e29d18fa89583cfb5b3e49bd0eb737e0')
+
+# Build
+# empty
+
+# Package
 package() {
-  # Unpack the upstream deb directly into the package root
-  bsdtar -xOf "${noextract[0]}" data.tar.xz | tar -xJf - -C "$pkgdir"
-  
-  # Install license
-  install -d "$pkgdir/usr/share/licenses/$pkgname"
-  mv "$pkgdir/opt/google/chrome/LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE" 2>/dev/null || true
+  bsdtar -xOf "${noextract[0]}" data.tar.xz | tar -xJf - -C "${pkgdir}"
+  install -d "${pkgdir}/usr/share/licenses/${pkgname}"
+  mv "${pkgdir}/opt/google/chrome/LICENSE" \
+    "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE" 2>/dev/null || true
 }

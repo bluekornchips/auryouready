@@ -1,10 +1,17 @@
+# shellcheck shell=bash disable=SC2034,SC2154
+
+# Metadata
 pkgname=synology-drive-client-bin
-pkgver=4.0.3.17892
+_pkgver=4.0.3
+_build=17892
+pkgver=${_pkgver}.${_build}
 pkgrel=1
 pkgdesc="Synology Drive Client - Sync and backup files from your Synology NAS (official binary release repack)"
 arch=('x86_64')
 url="https://www.synology.com/en-us/dsm/feature/drive"
 license=('custom')
+
+# Dependencies
 depends=(
   'alsa-lib'
   'gcc-libs'
@@ -22,19 +29,28 @@ depends=(
   'nss'
   'xdg-utils'
 )
+
+# Relations
 provides=('synology-drive-client')
 conflicts=('synology-drive-client')
-source=("https://global.synologydownload.com/download/Utility/SynologyDriveClient/4.0.3-17892/Ubuntu/Installer/synology-drive-client-17892.x86_64.deb")
-noextract=(synology-drive-client-17892.x86_64.deb)
+
+# Options
+# empty
+
+# Sources
+source=("synology-drive-client-${_build}.x86_64.deb::https://global.synologydownload.com/download/Utility/SynologyDriveClient/${_pkgver}-${_build}/Ubuntu/Installer/synology-drive-client-${_build}.x86_64.deb")
+noextract=("synology-drive-client-${_build}.x86_64.deb")
 sha512sums=('ede19b2a7ceae48e9ab59614e00f7b9d77b82d54b8c4a4e44bfc2418998b3f04157a70ae6a822b434112cfb89a2278b305ee7e1607c4092d2b6867f4ab88ea70')
 
+# Build
+# empty
+
+# Package
 package() {
-  # Unpack the upstream deb directly into the package root
-  bsdtar -xOf "${noextract[0]}" data.tar.xz | tar -xJf - -C "$pkgdir"
-  
-  # Install license if available
-  if [ -f "$pkgdir/opt/Synology/SynologyDrive/LICENSE" ]; then
-    install -d "$pkgdir/usr/share/licenses/$pkgname"
-    mv "$pkgdir/opt/Synology/SynologyDrive/LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE" 2>/dev/null || true
+  bsdtar -xOf "${noextract[0]}" data.tar.xz | tar -xJf - -C "${pkgdir}"
+  if [[ -f "${pkgdir}/opt/Synology/SynologyDrive/LICENSE" ]]; then
+    install -d "${pkgdir}/usr/share/licenses/${pkgname}"
+    mv "${pkgdir}/opt/Synology/SynologyDrive/LICENSE" \
+      "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
   fi
 }

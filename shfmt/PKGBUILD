@@ -1,3 +1,6 @@
+# shellcheck shell=bash disable=SC2034,SC2154
+
+# Metadata
 pkgname=shfmt
 pkgver=3.13.1
 pkgrel=1
@@ -5,36 +8,39 @@ pkgdesc="A shell parser, formatter, and interpreter with bash support"
 arch=('x86_64' 'aarch64' 'i686' 'armv7h')
 url="https://github.com/mvdan/sh"
 license=('BSD-3-Clause')
+
+# Dependencies
 makedepends=('go')
+
+# Relations
 provides=('shfmt' 'gosh')
 conflicts=('shfmt' 'gosh')
+
+# Options
+# empty
+
+# Sources
 source=("${url}/archive/v${pkgver}.tar.gz")
 sha512sums=('7cecc67f84a14096812066fef9d7b3c9f93be61eed8ce044e593e996e9dce0b0f77ed10c1f002ca356608a4dc2bc57250051ce4d958e1816ce5d1387aba7a4f5')
 
+# Build
 build() {
-  cd "${srcdir}/sh-${pkgver}"
+  cd "${srcdir}/sh-${pkgver}" || return
   export CGO_ENABLED=0
   export GOFLAGS="-buildmode=pie -trimpath -mod=readonly -modcacherw"
-  
-  # Build shfmt
+
   go build -trimpath -ldflags="-s -w -X main.version=${pkgver}" \
     -o shfmt ./cmd/shfmt
-  
-  # Build gosh
+
   go build -trimpath -ldflags="-s -w" \
     -o gosh ./cmd/gosh
 }
 
+# Package
 package() {
-  cd "${srcdir}/sh-${pkgver}"
-  
-  # Install shfmt
+  cd "${srcdir}/sh-${pkgver}" || return
+
   install -Dm755 shfmt "${pkgdir}/usr/bin/shfmt"
-  
-  # Install gosh
   install -Dm755 gosh "${pkgdir}/usr/bin/gosh"
-  
-  # Install license
   install -Dm644 LICENSE "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
 }
-
