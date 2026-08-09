@@ -1,0 +1,42 @@
+# shellcheck shell=bash disable=SC2034,SC2154
+
+# Metadata
+pkgname=mullvad-vpn-bin
+pkgver=2026.3
+pkgrel=1
+pkgdesc="Mullvad VPN client (official binary release repack)"
+arch=('x86_64')
+url="https://mullvad.net"
+license=('GPL-3.0-or-later')
+
+# Dependencies
+depends=(
+  'alsa-lib'
+  'gcc-libs'
+  'glibc'
+  'gtk3'
+  'iputils'
+  'libnftnl'
+  'libnotify'
+  'nss'
+)
+
+# Relations
+provides=('mullvad-vpn')
+conflicts=('mullvad-vpn')
+
+# Options
+# empty
+
+# Sources
+source=("mullvad-vpn_${pkgver}_amd64.deb::https://repository.mullvad.net/deb/stable/pool/main/m/mullvad-vpn/mullvad-vpn_${pkgver}_amd64.deb")
+noextract=("mullvad-vpn_${pkgver}_amd64.deb")
+sha512sums=('35ce8b7f93d5c48d60ce63c3f6b07a800393933669dfd57da774d43ccd8b7523b5d86d9f6d9ad09b6c73ec660ae9c6b25f3d4e6740d65d583a588fd1416d086d')
+
+# Build
+# empty
+
+# Package
+package() {
+  bsdtar -xOf "${noextract[0]}" data.tar.xz | tar -xJf - -C "${pkgdir}"
+}

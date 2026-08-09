@@ -8,6 +8,7 @@ Workspace for user-specific AUR-style packages. Each package lives in its own fo
 - `signal` – Signal Desktop binary repack (`signal-desktop-bin`)
 - `synology-drive-client` – Synology Drive Client repack (`synology-drive-client-bin`)
 - `google-chrome` – Google Chrome binary repack (`google-chrome-bin`)
+- `mullavad` – Mullvad VPN binary repack (`mullvad-vpn-bin`)
 - `shfmt` – Shell parser/formatter (source build)
 
 ## PKGBUILD schema
@@ -50,6 +51,7 @@ make install PKG=cursor
 make build PKG=signal
 make install PKG=synology-drive-client
 make install PKG=google-chrome
+make install PKG=mullavad
 make install PKG=shfmt
 make test
 make checksum

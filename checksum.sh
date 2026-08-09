@@ -17,6 +17,8 @@ Options:
   -u, --update          Download sources and rewrite sha512sums in PKGBUILD
 
 EOF
+
+	return 0
 }
 
 # Run a checksum step for one package directory
@@ -63,7 +65,9 @@ _run_step() {
 # - 0 on success
 # - 1 on failure
 _update() {
-	_run_step "$1" updating updated updpkgsums --nocolor
+	_run_step "$1" updating updated updpkgsums --nocolor || return 1
+
+	return 0
 }
 
 # Verify sha512sums for one package directory via makepkg
@@ -79,7 +83,9 @@ _update() {
 # - 0 on success
 # - 1 on failure
 _verify() {
-	_run_step "$1" verifying passed makepkg -f --verifysource --nocolor
+	_run_step "$1" verifying passed makepkg -f --verifysource --nocolor || return 1
+
+	return 0
 }
 
 # Process one package directory
@@ -106,23 +112,23 @@ process_target() {
 
 	case "${mode}" in
 	update)
-		_update "${target}"
+		_update "${target}" || return 1
 		;;
 	verify)
-		_verify "${target}"
+		_verify "${target}" || return 1
 		;;
 	*)
 		echo "process_target:: unknown mode '${mode}'" >&2
 		return 1
 		;;
 	esac
+
+	return 0
 }
 
 main() {
 	local targets=()
 	local mode="verify"
-	local target
-	local failures=0
 
 	while [[ $# -gt 0 ]]; do
 		case "$1" in
@@ -149,7 +155,7 @@ main() {
 		shift
 	done
 
-	if [[ -z "$GIT_ROOT" ]]; then
+	if [[ -z "${GIT_ROOT}" ]]; then
 		echo "main:: could not resolve git repository root" >&2
 		return 1
 	fi
@@ -164,8 +170,10 @@ main() {
 		return 1
 	fi
 
-	cd "$GIT_ROOT" || return 1
+	cd "${GIT_ROOT}" || return 1
 
+	local failures=0
+	local target
 	for target in "${targets[@]}"; do
 		if ! process_target "${target}" "${mode}"; then
 			failures=$((failures + 1))
@@ -183,7 +191,6 @@ main() {
 	else
 		echo "checksum:: all packages passed"
 	fi
-
 	return 0
 }
 

@@ -2,7 +2,7 @@
 
 # Metadata
 pkgname=google-chrome-bin
-pkgver=150.0.7871.186
+pkgver=151.0.7922.108
 pkgrel=1
 pkgdesc="The popular and trusted web browser by Google (official binary release repack)"
 arch=('x86_64')
@@ -45,7 +45,7 @@ conflicts=('google-chrome')
 # Sources
 source=("google-chrome-stable_${pkgver}_amd64.deb::https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb")
 noextract=("google-chrome-stable_${pkgver}_amd64.deb")
-sha512sums=('e9305be5b833860d03af4429856974369ba74a9ee18dabefd27a892ecbb454c725f4ef83b2b14330334599143a1098d9e29d18fa89583cfb5b3e49bd0eb737e0')
+sha512sums=('4d6430a203bd6ce38eb6431dac70be9354ab9c59d8c74a6de8a1085d7e53a9e4bc8707097e64f08b52d7e6b329c6d955fa0854cf479beaa8ba9a5c97ddf75351')
 
 # Build
 # empty

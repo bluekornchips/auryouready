@@ -155,9 +155,8 @@ EOF
 }
 
 @test "main:: --update fails when updpkgsums is missing" {
-	local empty_path
 	local saved_path="${PATH}"
-	empty_path="${BATS_TEST_TMPDIR}/empty-path"
+	local empty_path="${BATS_TEST_TMPDIR}/empty-path"
 	mkdir -p "${empty_path}"
 
 	PATH="${empty_path}"
