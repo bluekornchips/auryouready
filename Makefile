@@ -9,7 +9,7 @@ build:
 
 install:
 	@test -n "$(PKG)" || { echo "usage: make install PKG=<package>"; exit 1; }
-	cd "$(PKG)" && makepkg -si
+	./install.sh --target "$(PKG)"
 
 pin:
 	@test -n "$(PKG)" || { echo "usage: make pin PKG=<package>"; exit 1; }
@@ -29,4 +29,5 @@ clean:
 	./cleanup.sh
 
 all: checksum clean test
-	@for pkg in $(PACKAGES); do $(MAKE) install PKG="$$pkg" || exit 1; done
+	@trap '$(MAKE) clean' EXIT INT TERM; \
+	for pkg in $(PACKAGES); do $(MAKE) install PKG="$$pkg" || exit 1; done

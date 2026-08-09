@@ -77,6 +77,9 @@ makepkg -s
 makepkg -si
 ```
 
+The root `make install PKG=<package>` command asks before reinstalling an already installed version.
+The same behavior is available directly with `./install.sh --target <package>`.
+
 ## Redirect build artifacts
 
 ```bash
