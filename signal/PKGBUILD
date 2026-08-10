@@ -2,7 +2,7 @@
 
 # Metadata
 pkgname=signal-desktop-bin
-pkgver=8.18.0
+pkgver=8.22.0
 pkgrel=1
 pkgdesc="Signal Private Messenger (official binary release repack)"
 arch=('x86_64')
@@ -38,7 +38,7 @@ conflicts=('signal-desktop')
 # Sources
 source=("signal-desktop_${pkgver}_amd64.deb::https://updates.signal.org/desktop/apt/pool/s/signal-desktop/signal-desktop_${pkgver}_amd64.deb")
 noextract=("signal-desktop_${pkgver}_amd64.deb")
-sha512sums=('f6efdf0aeebd58c843d19bd11d069988fe2d0dac051600739b771c984a33b8b76aa232d2dd0691b150a9665ca57e1e0b8c1cf80c821ebe75ddbaa00e421c5761')
+sha512sums=('0fdc74b838b43e99791d8862024e9eb49ad1dc1bedbeaa1010dd287abf5ee9240c156b5894290626a3058c28cd799f0a164c8c4084519ba9fb9c109ab8b295ed')
 
 # Build
 # empty
