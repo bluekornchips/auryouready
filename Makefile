@@ -29,5 +29,7 @@ clean:
 	./cleanup.sh
 
 all: checksum clean test
-	@trap '$(MAKE) clean' EXIT INT TERM; \
+	@trap 'status=$$?; $(MAKE) clean; cleanup_status=$$?; \
+		if [ "$$status" -ne 0 ]; then exit "$$status"; fi; \
+		exit "$$cleanup_status"' EXIT INT TERM; \
 	for pkg in $(PACKAGES); do $(MAKE) install PKG="$$pkg" || exit 1; done
