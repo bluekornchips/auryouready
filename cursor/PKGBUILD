@@ -34,7 +34,7 @@ options=('!strip')
 _commit=ae3a2b7231dd56194447fe4570dfdc61640b1e9a
 source=("cursor_${pkgver}_amd64.deb::https://downloads.cursor.com/production/${_commit}/linux/x64/deb/amd64/deb/cursor_${pkgver}_amd64.deb")
 noextract=("cursor_${pkgver}_amd64.deb")
-sha512sums=('ad2e8e0ac32e9788b428e408a50570b2ecd3e64872b7671b53eb40e4ce3730ab9122d75e9c7ca72625c69fdf80c1808049ddb7df57758940acda9dac85340ad4')
+sha256sums=('b77c8f455ef899eb648787f07ae739cb3c5555e4eb3b58486f70743656fefefb')
 
 # Build
 # empty

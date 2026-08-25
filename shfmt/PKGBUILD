@@ -20,8 +20,8 @@ conflicts=('shfmt' 'gosh')
 # empty
 
 # Sources
-source=("${url}/archive/v${pkgver}.tar.gz")
-sha512sums=('7cecc67f84a14096812066fef9d7b3c9f93be61eed8ce044e593e996e9dce0b0f77ed10c1f002ca356608a4dc2bc57250051ce4d958e1816ce5d1387aba7a4f5')
+source=("shfmt-${pkgver}.tar.gz::${url}/archive/refs/tags/v${pkgver}.tar.gz")
+sha256sums=('b31aad2d4c26b0c6e8ebe894d59022520bbebce33e082d7d29e4325eee35d308')
 
 # Build
 build() {

@@ -31,7 +31,7 @@ conflicts=('mullvad-vpn')
 # Sources
 source=("mullvad-vpn_${pkgver}_amd64.deb::https://repository.mullvad.net/deb/stable/pool/main/m/mullvad-vpn/mullvad-vpn_${pkgver}_amd64.deb")
 noextract=("mullvad-vpn_${pkgver}_amd64.deb")
-sha512sums=('292b81f3f9eec1c6bbdc29632e76f7f9de00f11f63c84a04b12447f845546524c31ccaa64e2d85712e44c264906fb37ee89cdb31e1b2e85a8d312c435bef96f3')
+sha256sums=('f1d758079e1dc90fff0c8d48256599b717e1de9879682c861a6776851c59453b')
 
 # Build
 # empty

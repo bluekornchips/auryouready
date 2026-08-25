@@ -30,7 +30,7 @@ provides / conflicts
 options, or: # empty
 
 # Sources
-private vars, source, noextract, sha512sums
+private vars, source, noextract, sha256sums
 
 # Build
 build(), or: # empty

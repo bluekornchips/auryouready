@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Verify or update sha512 checksums for package PKGBUILDs against upstream sources.
+# Verify or update source checksums for package PKGBUILDs against upstream sources.
 #
 
 GIT_ROOT="$(git rev-parse --show-toplevel 2>/dev/null || echo "")"
@@ -9,12 +9,12 @@ usage() {
 	cat <<EOF
 Usage: $(basename "$0") [OPTION]...
 
-Verify or update sha512sums in a package PKGBUILD against upstream sources.
+Verify or update checksum arrays in a package PKGBUILD against upstream sources.
 
 Options:
   -h, --help            Show this help and exit
   -t, --target TARGET   Package directory to process, repeatable
-  -u, --update          Download sources and rewrite sha512sums in PKGBUILD
+  -u, --update          Download sources and rewrite checksums in PKGBUILD
 
 EOF
 
@@ -52,13 +52,13 @@ _run_step() {
 	return 0
 }
 
-# Rewrite sha512sums for one package directory via updpkgsums
+# Rewrite checksum arrays for one package directory via updpkgsums
 #
 # Inputs:
 # - $1 package directory relative to repo root
 #
 # Side Effects:
-# - Runs updpkgsums, rewriting sha512sums in PKGBUILD
+# - Runs updpkgsums, rewriting checksum arrays in PKGBUILD
 # - Writes progress and errors to stdout/stderr
 #
 # Returns:
@@ -70,7 +70,7 @@ _update() {
 	return 0
 }
 
-# Verify sha512sums for one package directory via makepkg
+# Verify checksums for one package directory via makepkg
 #
 # Inputs:
 # - $1 package directory relative to repo root

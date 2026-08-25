@@ -43,9 +43,9 @@ conflicts=('google-chrome')
 # empty
 
 # Sources
-source=("google-chrome-stable_${pkgver}_amd64.deb::https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb")
+source=("google-chrome-stable_${pkgver}_amd64.deb::https://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_${pkgver}-1_amd64.deb")
 noextract=("google-chrome-stable_${pkgver}_amd64.deb")
-sha512sums=('1c099aacfc9cdb9bfae159a05076c3d06e6c13352aefb87d840daf8594ec2d445d20ba1ba53c5e349a87c07394ea1a58613209faa3fe5c5f5dabaf0cbe2d79b0')
+sha256sums=('878e5ab495b8a694980fca61bc09b37e651ccedce2291c73434d16e48a2646fd')
 
 # Build
 # empty
