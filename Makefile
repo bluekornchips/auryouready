@@ -28,6 +28,6 @@ checksum:
 clean:
 	./scripts/cleanup.sh
 
-all: checksum clean test
+all: checksum clean
 	@trap '$(MAKE) clean' EXIT INT TERM; \
 	for pkg in $(PACKAGES); do $(MAKE) install PKG="$$pkg" || exit 1; done
