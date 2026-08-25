@@ -9,24 +9,24 @@ build:
 
 install:
 	@test -n "$(PKG)" || { echo "usage: make install PKG=<package>"; exit 1; }
-	./install.sh --target "$(PKG)"
+	./scripts/install.sh --target "$(PKG)"
 
 pin:
 	@test -n "$(PKG)" || { echo "usage: make pin PKG=<package>"; exit 1; }
-	./checksum.sh -u -t "$(PKG)"
+	./scripts/checksum.sh -u -t "$(PKG)"
 
 test:
 	command -v shellcheck >/dev/null || { echo "shellcheck is not installed"; exit 1; }
 	command -v bats >/dev/null || { echo "bats is not installed"; exit 1; }
-	shellcheck *.sh tests/*.sh
+	shellcheck scripts/*.sh scripts/tests/*.sh
 	shellcheck -s bash */PKGBUILD
-	bats tests/*.sh --verbose-run --timing
+	bats scripts/tests/*.sh --verbose-run --timing
 
 checksum:
-	./checksum.sh $(foreach pkg,$(PACKAGES),-t $(pkg))
+	./scripts/checksum.sh $(foreach pkg,$(PACKAGES),-t $(pkg))
 
 clean:
-	./cleanup.sh
+	./scripts/cleanup.sh
 
 all: checksum clean test
 	@trap '$(MAKE) clean' EXIT INT TERM; \

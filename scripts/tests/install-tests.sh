@@ -10,7 +10,7 @@ setup_file() {
 		fail "Failed to get git root"
 	fi
 
-	SCRIPT="${GIT_ROOT}/install.sh"
+	SCRIPT="${GIT_ROOT}/scripts/install.sh"
 	if [[ ! -f "${SCRIPT}" ]]; then
 		fail "Script not found: ${SCRIPT}"
 	fi

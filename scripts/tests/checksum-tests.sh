@@ -9,7 +9,7 @@ setup_file() {
 		fail "Failed to get git root"
 	fi
 
-	SCRIPT="${GIT_ROOT}/checksum.sh"
+	SCRIPT="${GIT_ROOT}/scripts/checksum.sh"
 	if [[ ! -f "${SCRIPT}" ]]; then
 		fail "Script not found: ${SCRIPT}"
 	fi

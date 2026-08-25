@@ -26,7 +26,7 @@ EOF
 	return 0
 }
 
-# Print the absolute path to the directory that contains this script.
+# Print the absolute path to the repository root, parent of scripts/.
 #
 # Outputs:
 # - Writes one line, the repository root used for cleanup, to stdout
@@ -36,8 +36,8 @@ EOF
 # - 1 if the path cannot be resolved
 repo_root() {
 	local root
-	if ! root="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"; then
-		echo "repo_root:: could not resolve script directory" >&2
+	if ! root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"; then
+		echo "repo_root:: could not resolve repository root" >&2
 		return 1
 	fi
 
