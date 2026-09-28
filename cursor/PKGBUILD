@@ -2,7 +2,7 @@
 
 # Metadata
 pkgname=cursor-bin
-pkgver=3.17.19
+pkgver=3.22.12
 pkgrel=1
 pkgdesc="Cursor binary release"
 arch=('x86_64')
@@ -31,10 +31,10 @@ conflicts=('cursor')
 options=('!strip')
 
 # Sources
-_commit=ae3a2b7231dd56194447fe4570dfdc61640b1e9a
+_commit=3a92974361033b2051526321308c2740fe5912c5
 source=("cursor_${pkgver}_amd64.deb::https://downloads.cursor.com/production/${_commit}/linux/x64/deb/amd64/deb/cursor_${pkgver}_amd64.deb")
 noextract=("cursor_${pkgver}_amd64.deb")
-sha256sums=('b77c8f455ef899eb648787f07ae739cb3c5555e4eb3b58486f70743656fefefb')
+sha256sums=('8b9198f7dde79f7e27cc83dabf3c66a93ca5303b6919719100c82f29d9498a65')
 
 # Build
 # empty

@@ -1,4 +1,4 @@
-PACKAGES := cursor signal google-chrome mullavad shfmt
+PACKAGES := cursor signal google-chrome mullavad
 
 .PHONY: build install pin test checksum clean all
 .DEFAULT_GOAL := all

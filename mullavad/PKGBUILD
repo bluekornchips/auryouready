@@ -2,7 +2,7 @@
 
 # Metadata
 pkgname=mullvad-vpn-bin
-pkgver=2026.4
+pkgver=2026.5
 pkgrel=1
 pkgdesc="Mullvad VPN client (official binary release repack)"
 arch=('x86_64')
@@ -31,7 +31,7 @@ conflicts=('mullvad-vpn')
 # Sources
 source=("mullvad-vpn_${pkgver}_amd64.deb::https://repository.mullvad.net/deb/stable/pool/main/m/mullvad-vpn/mullvad-vpn_${pkgver}_amd64.deb")
 noextract=("mullvad-vpn_${pkgver}_amd64.deb")
-sha256sums=('f1d758079e1dc90fff0c8d48256599b717e1de9879682c861a6776851c59453b')
+sha256sums=('aa6bd00452588597f50e8ca2f02bb91e9c295c4f01b0ae907354552e7428e7ab')
 
 # Build
 # empty
