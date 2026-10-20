@@ -46,12 +46,11 @@ Copy the closest existing package when adding one.
 make pin PKG=cursor
 make build PKG=cursor
 make install PKG=cursor
-make build PKG=signal
-make install PKG=google-chrome
-make install PKG=mullavad
-make test
+make install
 make checksum
 make clean
+make test
+make
 ```
 
 To update a package, change its version and source URL, then run:
@@ -61,22 +60,18 @@ make pin PKG=cursor
 make build PKG=cursor
 ```
 
-`pin` needs `updpkgsums` from `pacman-contrib`. `checksum` only verifies existing sums.
+`pin` is `updpkgsums`. `checksum` is `makepkg --verifysource` when you want an explicit verify.
+Bare `make` / `make install` go through `scripts/install.sh`, skip when the same version is already installed, and clean artifacts on exit or interrupt.
+`FORCE=1` forces reinstall. `makepkg -si` validates checksums when it actually builds.
+Needs `base-devel` and `pacman-contrib`.
 
-## Requirements
-
-Arch Linux with `base-devel` and `pacman-contrib`. Packages may list more build dependencies.
-
-## Build a package
+## Build without make
 
 ```bash
 cd cursor
 makepkg -s
 makepkg -si
 ```
-
-The root `make install PKG=<package>` command asks before reinstalling an already installed version.
-The same behavior is available directly with `./scripts/install.sh --target <package>`.
 
 ## Redirect build artifacts
 

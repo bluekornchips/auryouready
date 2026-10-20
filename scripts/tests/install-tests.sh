@@ -4,24 +4,17 @@
 # Tests for install.sh
 #
 
-setup_file() {
-	GIT_ROOT="$(git rev-parse --show-toplevel || echo "")"
-	if [[ -z "${GIT_ROOT}" ]]; then
-		fail "Failed to get git root"
-	fi
-
-	SCRIPT="${GIT_ROOT}/scripts/install.sh"
-	if [[ ! -f "${SCRIPT}" ]]; then
-		fail "Script not found: ${SCRIPT}"
-	fi
-
-	export GIT_ROOT
-	export SCRIPT
-
-	return 0
+GIT_ROOT="$(git rev-parse --show-toplevel || echo "")"
+SCRIPT="${GIT_ROOT}/scripts/install.sh"
+[[ -f "${SCRIPT}" ]] || {
+	echo "setup:: Script not found: ${SCRIPT}" >&2
+	return 1
 }
 
 setup() {
+	# shellcheck source=../install.sh
+	source "${SCRIPT}"
+
 	MOCK_BIN="${BATS_TEST_TMPDIR}/mock-bin"
 	mkdir -p "${MOCK_BIN}"
 	PATH="${MOCK_BIN}:${PATH}"
@@ -35,6 +28,8 @@ setup() {
 	mkdir -p "${PKG_DIR}"
 	: >"${PKG_DIR}/PKGBUILD"
 	export PKG_DIR
+
+	unset FORCE
 
 	cat >"${MOCK_BIN}/makepkg" <<'EOF'
 #!/usr/bin/env bash
@@ -69,33 +64,49 @@ EOF
 	run bash "${SCRIPT}" --help
 	[[ "${status}" -eq 0 ]]
 	echo "${output}" | grep -q "Usage:"
-	echo "${output}" | grep -q -- "-t, --target"
 }
 
-@test "install_target:: skips same version when declined" {
+@test "main:: requires package directory" {
+	run main
+	[[ "${status}" -eq 1 ]]
+	echo "${output}" | grep -q "main:: package directory is required"
+}
+
+@test "main:: rejects unknown option" {
+	run main --nope
+	[[ "${status}" -eq 1 ]]
+	echo "${output}" | grep -q "main:: unknown option"
+}
+
+@test "install_package:: auto-skips same version" {
 	install_pacman_mock "1.0-1"
 
-	run bash -c 'source "$1"; printf "n\n" | install_target "$2"' _ \
-		"${SCRIPT}" "${PKG_DIR}"
+	run install_package "${PKG_DIR}"
 	[[ "${status}" -eq 0 ]]
-	echo "${output}" | grep -q "install skipped"
+	echo "${output}" | grep -q "already installed"
 	[[ ! -s "${CALL_LOG}" ]]
 }
 
-@test "install_target:: installs same version when confirmed" {
-	install_pacman_mock "1.0-1"
+@test "install_package:: installs newer version" {
+	install_pacman_mock "0.9-1"
 
-	run bash -c 'source "$1"; printf "y\n" | install_target "$2"' _ \
-		"${SCRIPT}" "${PKG_DIR}"
+	run install_package "${PKG_DIR}"
 	[[ "${status}" -eq 0 ]]
 	grep -qx "makepkg -si" "${CALL_LOG}"
 }
 
-@test "install_target:: installs newer version without prompt" {
-	install_pacman_mock "0.9-1"
+@test "install_package:: FORCE reinstalls same version" {
+	install_pacman_mock "1.0-1"
+	FORCE=1
+	export FORCE
 
-	run bash -c 'source "$1"; install_target "$2"' _ \
-		"${SCRIPT}" "${PKG_DIR}"
+	run install_package "${PKG_DIR}"
 	[[ "${status}" -eq 0 ]]
 	grep -qx "makepkg -si" "${CALL_LOG}"
+}
+
+@test "install_package:: fails when PKGBUILD is missing" {
+	run install_package "${BATS_TEST_TMPDIR}/missing"
+	[[ "${status}" -eq 1 ]]
+	echo "${output}" | grep -q "no PKGBUILD"
 }

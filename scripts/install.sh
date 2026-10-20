@@ -1,108 +1,113 @@
 #!/usr/bin/env bash
 # shellcheck shell=bash
 #
-# Build and install package PKGBUILDs.
+# Build and install one package directory.
+# Same version already installed: skip unless FORCE is set.
 #
 
 ROOT="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
 
+# Print usage to stdout.
+#
+# Outputs:
+# - usage text
+#
+# Returns:
+# - 0 always
 usage() {
 	cat <<EOF
-Usage: $(basename "$0") [OPTION]
+Usage: $(basename "$0") PACKAGE
 
-Build and install a package. Ask before reinstalling the same version.
+Build and install a package directory. Same version already installed is skipped.
+Set FORCE=1 to reinstall.
 
 Options:
-  -h, --help            Show this help and exit
-  -t, --target PACKAGE  Package directory to install
+  -h, --help  Show this help and exit
 EOF
 
 	return 0
 }
 
-install_target() {
+# Build and install one package directory, skipping when the installed version matches.
+#
+# Inputs:
+# - $1 package directory relative to repo root
+#
+# Side Effects:
+# - may run makepkg -si in the package directory
+# - reads FORCE to force reinstall of the same version
+#
+# Outputs:
+# - skip message when the same version is already installed
+#
+# Returns:
+# - 0 on success or skip
+# - 1 when PKGBUILD is missing, version lookup fails, or makepkg fails
+install_package() {
 	local target="$1"
+	local srcinfo
+	local pkgname
+	local epoch
+	local pkgver
+	local pkgrel
+	local version
+	local installed
 
-	[[ -f "${target}/PKGBUILD" ]] || {
-		echo "install_target:: no PKGBUILD in ${target}" >&2
+	[[ -n "${target}" ]] || {
+		echo "install_package:: target is required" >&2
 		return 1
 	}
 
-	local srcinfo
+	[[ -f "${target}/PKGBUILD" ]] || {
+		echo "install_package:: no PKGBUILD in ${target}" >&2
+		return 1
+	}
+
 	srcinfo="$(cd "${target}" && makepkg --printsrcinfo)" || return 1
 
-	local pkgname
 	pkgname="$(awk '$1 == "pkgname" { print $3; exit }' <<<"${srcinfo}")"
-
-	local epoch
 	epoch="$(awk '$1 == "epoch" { print $3; exit }' <<<"${srcinfo}")"
-
-	local pkgver
 	pkgver="$(awk '$1 == "pkgver" { print $3; exit }' <<<"${srcinfo}")"
-
-	local pkgrel
 	pkgrel="$(awk '$1 == "pkgrel" { print $3; exit }' <<<"${srcinfo}")"
-
-	local version
 	version="${epoch:+${epoch}:}${pkgver}-${pkgrel}"
+	installed="$(pacman -Q "${pkgname}" 2>/dev/null | awk '{ print $2 }')" || true
 
-	local installed_version
-	installed_version="$(pacman -Q "${pkgname}" 2>/dev/null | awk '{ print $2 }')" || true
+	if [[ -z "${FORCE:-}" && "${installed}" == "${version}" ]]; then
+		echo "install_package:: skipped ${target} (${pkgname} ${version} already installed)"
 
-	if [[ "${installed_version}" == "${version}" ]]; then
-		local answer
-		printf '%s is already installed at version %s. Reinstall? [y/N] ' \
-			"${pkgname}" "${installed_version}"
-		read -r answer || answer=""
-		case "${answer}" in
-		[yY] | [yY][eE][sS])
-			;;
-		*)
-			echo "install_target:: install skipped"
-			return 0
-			;;
-		esac
+		return 0
 	fi
 
-	(cd "${target}" && makepkg -si)
-	return $?
+	(cd "${target}" && makepkg -si) || return 1
+
+	return 0
 }
 
 main() {
-	local target=""
+	local target
 
 	case "${1:-}" in
 	-h | --help)
 		usage
 		return 0
 		;;
-	-t | --target)
-		target="${2:-}"
+	"")
+		echo "main:: package directory is required" >&2
+		return 1
+		;;
+	-*)
+		echo "main:: unknown option '$1'" >&2
+		return 1
 		;;
 	*)
-		echo "main:: usage: $0 --target PACKAGE" >&2
-		return 1
+		target="${1%/}"
 		;;
 	esac
 
-	[[ -n "${target}" ]] || {
-		echo "main:: --target requires a package directory" >&2
-		return 1
-	}
-
-	if ! command -v makepkg >/dev/null 2>&1; then
-		echo "main:: makepkg is not installed" >&2
-		return 1
-	fi
-
-	if ! command -v pacman >/dev/null 2>&1; then
-		echo "main:: pacman is not installed" >&2
-		return 1
-	fi
-
 	cd "${ROOT}" || return 1
-	install_target "${target}"
-	return $?
+	install_package "${target}" || return 1
+
+	return 0
 }
 
 if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then
