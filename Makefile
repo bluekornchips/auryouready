@@ -3,7 +3,7 @@ SELECTED := $(if $(strip $(PKG)),$(PKG),$(PACKAGES))
 CLEAN_DIRS := $(foreach p,$(SELECTED),$(p)/pkg $(p)/src)
 CLEAN_FILES := $(foreach p,$(SELECTED),$(p)/*.pkg.tar.* $(p)/*.deb $(p)/makepkg-*.log)
 
-.PHONY: build install pin test checksum clean all
+.PHONY: build install update pin test checksum clean all
 .DEFAULT_GOAL := all
 
 build:
@@ -18,6 +18,12 @@ install:
 	for pkg in $(SELECTED); do \
 		./scripts/install.sh "$$pkg" || exit 1; \
 	done
+
+# PKG set: one package. PKG unset: every package via scripts/update.sh default.
+# Queries upstream, rewrites pkgver when newer, resets pkgrel, runs updpkgsums.
+update:
+	@trap 'rm -rf $(CLEAN_DIRS); rm -f $(CLEAN_FILES)' EXIT INT TERM; \
+	./scripts/update.sh $(if $(PKG),-p $(PKG),)
 
 pin:
 	@test -n "$(PKG)" || { echo "usage: make pin PKG=<package>"; exit 1; }
@@ -35,7 +41,7 @@ clean:
 test:
 	command -v shellcheck >/dev/null || { echo "shellcheck is not installed"; exit 1; }
 	command -v bats >/dev/null || { echo "bats is not installed"; exit 1; }
-	shellcheck scripts/*.sh scripts/tests/*.sh
+	shellcheck scripts/*.sh scripts/packages/* scripts/tests/*.sh
 	shellcheck -s bash */PKGBUILD
 	bats scripts/tests/*.sh --verbose-run --timing
 

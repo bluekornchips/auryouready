@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+#
+# Mullvad VPN upstream version lookup.
+#
+
+MULLVAD_URL='https://repository.mullvad.net/deb/stable/dists/stable/main/binary-amd64/Packages'
+MULLVAD_PACKAGE='mullvad-vpn'
+
+# Fetch Mullvad VPN version from the Debian Packages index.
+#
+# Outputs:
+# - pkgver on stdout
+#
+# Returns:
+# - 0 on success
+# - 1 when the request or parse fails
+fetch_upstream() {
+	local body
+	body="$(curl -fsSL "${MULLVAD_URL}")" || {
+		echo "fetch_upstream:: mullvad Packages request failed" >&2
+		return 1
+	}
+
+	local pkgver
+	pkgver="$(
+		awk -v pkg="${MULLVAD_PACKAGE}" '
+			$0 == "Package: " pkg { hit = 1 }
+			hit && $1 == "Version:" {
+				sub(/-.*/, "", $2)
+				print $2
+				exit
+			}
+			hit && NF == 0 { hit = 0 }
+		' <<<"${body}"
+	)"
+
+	[[ -n "${pkgver}" ]] || {
+		echo "fetch_upstream:: could not parse mullvad Version for ${MULLVAD_PACKAGE}" >&2
+		return 1
+	}
+
+	printf '%s\n' "${pkgver}"
+
+	return 0
+}

@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+#
+# Cursor stable upstream version lookup.
+#
+
+CURSOR_URL='https://www.cursor.com/api/download?platform=linux-x64&releaseTrack=stable'
+
+# Fetch Cursor stable version and commit from the download API.
+#
+# Outputs:
+# - "pkgver commit" on stdout
+#
+# Returns:
+# - 0 on success
+# - 1 when the request or parse fails
+fetch_upstream() {
+	local body
+	body="$(curl -fsSL -A 'Mozilla/5.0' "${CURSOR_URL}")" || {
+		echo "fetch_upstream:: cursor download API request failed" >&2
+		return 1
+	}
+
+	local pkgver
+	pkgver="$(sed -n 's/.*"version"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' <<<"${body}" | head -n1)"
+
+	local commit
+	commit="$(sed -n 's/.*"commitSha"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' <<<"${body}" | head -n1)"
+
+	[[ -n "${pkgver}" && -n "${commit}" ]] || {
+		echo "fetch_upstream:: could not parse cursor version or commitSha" >&2
+		return 1
+	}
+
+	printf '%s %s\n' "${pkgver}" "${commit}"
+
+	return 0
+}

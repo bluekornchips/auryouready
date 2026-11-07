@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+#
+# Google Chrome stable upstream version lookup.
+#
+
+CHROME_URL='https://dl.google.com/linux/chrome/deb/dists/stable/main/binary-amd64/Packages'
+CHROME_PACKAGE='google-chrome-stable'
+
+# Fetch Google Chrome stable version from the Debian Packages index.
+#
+# Outputs:
+# - pkgver on stdout
+#
+# Returns:
+# - 0 on success
+# - 1 when the request or parse fails
+fetch_upstream() {
+	local body
+	body="$(curl -fsSL "${CHROME_URL}")" || {
+		echo "fetch_upstream:: chrome Packages request failed" >&2
+		return 1
+	}
+
+	local pkgver
+	pkgver="$(
+		awk -v pkg="${CHROME_PACKAGE}" '
+			$0 == "Package: " pkg { hit = 1 }
+			hit && $1 == "Version:" {
+				sub(/-.*/, "", $2)
+				print $2
+				exit
+			}
+			hit && NF == 0 { hit = 0 }
+		' <<<"${body}"
+	)"
+
+	[[ -n "${pkgver}" ]] || {
+		echo "fetch_upstream:: could not parse chrome Version for ${CHROME_PACKAGE}" >&2
+		return 1
+	}
+
+	printf '%s\n' "${pkgver}"
+
+	return 0
+}

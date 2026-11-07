@@ -43,6 +43,8 @@ Copy the closest existing package when adding one.
 ## Root Makefile
 
 ```bash
+make update
+make update PKG=cursor
 make pin PKG=cursor
 make build PKG=cursor
 make install PKG=cursor
@@ -53,14 +55,16 @@ make test
 make
 ```
 
-To update a package, change its version and source URL, then run:
+`make update` runs `scripts/update.sh`. With no `PKG`, every package under `scripts/packages` is updated. With `PKG`, only that package is passed as `-p`. The script queries upstream, rewrites `pkgver` when newer, resets `pkgrel` to 1, and runs `updpkgsums`. Same version already latest is skipped. Cleanup of downloaded sources matches `install`.
 
 ```bash
-make pin PKG=cursor
+./scripts/update.sh
+./scripts/update.sh -p cursor -p signal
+make update PKG=cursor
 make build PKG=cursor
 ```
 
-`pin` is `updpkgsums`. `checksum` is `makepkg --verifysource` when you want an explicit verify.
+`pin` is `updpkgsums` alone. `checksum` is `makepkg --verifysource` when you want an explicit verify.
 Bare `make` / `make install` go through `scripts/install.sh`, skip when the same version is already installed, and clean artifacts on exit or interrupt.
 `FORCE=1` forces reinstall. `makepkg -si` validates checksums when it actually builds.
 Needs `base-devel` and `pacman-contrib`.

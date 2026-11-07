@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+#
+# Signal Desktop upstream version lookup.
+#
+
+SIGNAL_URL='https://updates.signal.org/desktop/latest-linux.yml'
+
+# Fetch Signal Desktop version from latest-linux.yml.
+#
+# Outputs:
+# - pkgver on stdout
+#
+# Returns:
+# - 0 on success
+# - 1 when the request or parse fails
+fetch_upstream() {
+	local body
+	body="$(curl -fsSL "${SIGNAL_URL}")" || {
+		echo "fetch_upstream:: signal latest-linux.yml request failed" >&2
+		return 1
+	}
+
+	local pkgver
+	pkgver="$(awk '$1 == "version:" { print $2; exit }' <<<"${body}")"
+
+	[[ -n "${pkgver}" ]] || {
+		echo "fetch_upstream:: could not parse signal version" >&2
+		return 1
+	}
+
+	printf '%s\n' "${pkgver}"
+
+	return 0
+}
