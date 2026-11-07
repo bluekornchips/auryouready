@@ -12,7 +12,6 @@ SCRIPT="${GIT_ROOT}/scripts/install.sh"
 }
 
 setup() {
-	# shellcheck source=../install.sh
 	source "${SCRIPT}"
 
 	MOCK_BIN="${BATS_TEST_TMPDIR}/mock-bin"
@@ -48,6 +47,16 @@ EOF
 	return 0
 }
 
+# Write a mock pacman binary that reports a fixed version for test-package.
+#
+# Inputs:
+# - $1 version string to report
+#
+# Side Effects:
+# - Writes and marks executable ${MOCK_BIN}/pacman
+#
+# Returns:
+# - 0 always
 install_pacman_mock() {
 	local version="$1"
 

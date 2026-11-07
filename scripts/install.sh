@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
-# shellcheck shell=bash
 #
 # Build and install one package directory.
-# Same version already installed: skip unless FORCE is set.
 #
 
 ROOT="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -45,13 +43,6 @@ EOF
 # - 1 when PKGBUILD is missing, version lookup fails, or makepkg fails
 install_package() {
 	local target="$1"
-	local srcinfo
-	local pkgname
-	local epoch
-	local pkgver
-	local pkgrel
-	local version
-	local installed
 
 	[[ -n "${target}" ]] || {
 		echo "install_package:: target is required" >&2
@@ -63,18 +54,28 @@ install_package() {
 		return 1
 	}
 
+	local srcinfo
 	srcinfo="$(cd "${target}" && makepkg --printsrcinfo)" || return 1
 
+	local pkgname
 	pkgname="$(awk '$1 == "pkgname" { print $3; exit }' <<<"${srcinfo}")"
+
+	local epoch
 	epoch="$(awk '$1 == "epoch" { print $3; exit }' <<<"${srcinfo}")"
+
+	local pkgver
 	pkgver="$(awk '$1 == "pkgver" { print $3; exit }' <<<"${srcinfo}")"
+
+	local pkgrel
 	pkgrel="$(awk '$1 == "pkgrel" { print $3; exit }' <<<"${srcinfo}")"
-	version="${epoch:+${epoch}:}${pkgver}-${pkgrel}"
+
+	local version="${epoch:+${epoch}:}${pkgver}-${pkgrel}"
+
+	local installed
 	installed="$(pacman -Q "${pkgname}" 2>/dev/null | awk '{ print $2 }')" || true
 
 	if [[ -z "${FORCE:-}" && "${installed}" == "${version}" ]]; then
 		echo "install_package:: skipped ${target} (${pkgname} ${version} already installed)"
-
 		return 0
 	fi
 

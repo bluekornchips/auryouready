@@ -10,17 +10,12 @@ build:
 	@test -n "$(PKG)" || { echo "usage: make build PKG=<package>"; exit 1; }
 	cd "$(PKG)" && makepkg -s
 
-# PKG set: one package. PKG unset: every package.
-# Same version already installed: skipped. FORCE=1 reinstalls.
-# makepkg -si validates checksums when it actually builds.
 install:
 	@trap 'rm -rf $(CLEAN_DIRS); rm -f $(CLEAN_FILES)' EXIT INT TERM; \
 	for pkg in $(SELECTED); do \
 		./scripts/install.sh "$$pkg" || exit 1; \
 	done
 
-# PKG set: one package. PKG unset: every package via scripts/update.sh default.
-# Queries upstream, rewrites pkgver when newer, resets pkgrel, runs updpkgsums.
 update:
 	@trap 'rm -rf $(CLEAN_DIRS); rm -f $(CLEAN_FILES)' EXIT INT TERM; \
 	./scripts/update.sh $(if $(PKG),-p $(PKG),)

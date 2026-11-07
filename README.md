@@ -1,13 +1,44 @@
 # User AUR Packages
 
-Workspace for user-specific AUR-style packages. Each package lives in its own folder with a `PKGBUILD` and any helper files needed to build locally or share with others.
+Local `PKGBUILD` workspace for binary repacks on Arch Linux.
 
 ## Packages
 
-- `cursor` – Cursor IDE binary repack (`cursor-bin`)
-- `signal` – Signal Desktop binary repack (`signal-desktop-bin`)
-- `google-chrome` – Google Chrome binary repack (`google-chrome-bin`)
-- `mullavad` – Mullvad VPN binary repack (`mullvad-vpn-bin`)
+- `cursor`: `cursor-bin`, Cursor IDE
+- `signal`: `signal-desktop-bin`, Signal Desktop
+- `google-chrome`: `google-chrome-bin`, Google Chrome
+- `mullavad`: `mullvad-vpn-bin`, Mullvad VPN
+
+## Usage
+
+Update all package definitions from upstream, then build and install any newer versions:
+
+```bash
+make update
+make install
+```
+
+`make update` runs `scripts/update.sh` to query upstream, rewrite `pkgver` and `pkgrel` when newer, and refresh `sha256sums` with `updpkgsums`. Packages already at the latest version are skipped.
+
+`make install` runs `scripts/install.sh` to build and install each package with `makepkg -si`, skipping packages whose installed version already matches `PKGBUILD`. Both targets clean build and download artifacts on exit.
+
+Target one or more packages or run individual steps:
+
+```bash
+make update PKG=cursor
+make install PKG=cursor
+make install FORCE=1 PKG=cursor
+make build PKG=cursor
+make pin PKG=cursor
+make checksum
+make clean
+make test
+./scripts/update.sh -p cursor -p signal
+```
+
+`FORCE=1` reinstalls a matching version. `pin` runs `updpkgsums`, and `checksum` runs `makepkg --verifysource`.
+
+Requires `base-devel`, `pacman-contrib`, and `curl`. `make test` also requires `shellcheck` and `bats`.
 
 ## PKGBUILD schema
 
@@ -40,48 +71,17 @@ package()
 
 Copy the closest existing package when adding one.
 
-## Root Makefile
+## Direct makepkg
+
+Inside a package directory:
 
 ```bash
-make update
-make update PKG=cursor
-make pin PKG=cursor
-make build PKG=cursor
-make install PKG=cursor
-make install
-make checksum
-make clean
-make test
-make
-```
-
-`make update` runs `scripts/update.sh`. With no `PKG`, every package under `scripts/packages` is updated. With `PKG`, only that package is passed as `-p`. The script queries upstream, rewrites `pkgver` when newer, resets `pkgrel` to 1, and runs `updpkgsums`. Same version already latest is skipped. Cleanup of downloaded sources matches `install`.
-
-```bash
-./scripts/update.sh
-./scripts/update.sh -p cursor -p signal
-make update PKG=cursor
-make build PKG=cursor
-```
-
-`pin` is `updpkgsums` alone. `checksum` is `makepkg --verifysource` when you want an explicit verify.
-Bare `make` / `make install` go through `scripts/install.sh`, skip when the same version is already installed, and clean artifacts on exit or interrupt.
-`FORCE=1` forces reinstall. `makepkg -si` validates checksums when it actually builds.
-Needs `base-devel` and `pacman-contrib`.
-
-## Build without make
-
-```bash
-cd cursor
-makepkg -s
 makepkg -si
 ```
 
-## Redirect build artifacts
+Redirect build artifacts outside the package directory:
 
 ```bash
 PKGDEST="$PWD/artifacts/pkg" SRCDEST="$PWD/artifacts/src" \
 LOGDEST="$PWD/artifacts/logs" BUILDDIR="$PWD/artifacts/build" makepkg -Csi
 ```
-
-Run this inside a package directory.

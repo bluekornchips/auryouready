@@ -111,52 +111,13 @@ set_pkgbuild_field() {
 	return 0
 }
 
-# Rewrite PKGBUILD version fields and pin checksums with updpkgsums.
-#
-# Inputs:
-# - $1 package directory relative to repo root
-# - $2 new pkgver
-# - $3 optional new _commit
-#
-# Side Effects:
-# - Rewrites pkgver, pkgrel, and optionally _commit in the PKGBUILD
-# - Runs updpkgsums in the package directory
-#
-# Outputs:
-# - progress messages on stdout
-#
-# Returns:
-# - 0 on success
-# - 1 when rewrite or updpkgsums fails
-apply_update() {
-	local target="$1"
-	local new_pkgver="$2"
-	local new_commit="${3:-}"
-	local pkgbuild="${target}/PKGBUILD"
-
-	set_pkgbuild_field "${pkgbuild}" pkgver "${new_pkgver}" || return 1
-	set_pkgbuild_field "${pkgbuild}" pkgrel 1 || return 1
-
-	if [[ -n "${new_commit}" ]]; then
-		set_pkgbuild_field "${pkgbuild}" _commit "${new_commit}" || return 1
-	fi
-
-	echo "update_package:: pinning ${target} (${new_pkgver})"
-	(cd "${target}" && updpkgsums --nocolor) || {
-		echo "apply_update:: updpkgsums failed for ${target}" >&2
-		return 1
-	}
-
-	return 0
-}
-
 # Fetch upstream metadata and update one package directory when newer.
 #
 # Inputs:
 # - $1 package directory relative to repo root
 #
 # Side Effects:
-# - May rewrite PKGBUILD fields and run updpkgsums
+# - Rewrites PKGBUILD fields and runs updpkgsums when upstream is newer
 #
 # Outputs:
 # - skip or update messages on stdout
@@ -166,6 +127,7 @@ apply_update() {
 # - 1 when PKGBUILD is missing, fetch fails, or update fails
 update_package() {
 	local target="$1"
+	local pkgbuild="${target}/PKGBUILD"
 	local fetcher="${PACKAGES_DIR}/${target}"
 
 	[[ -n "${target}" ]] || {
@@ -173,7 +135,7 @@ update_package() {
 		return 1
 	}
 
-	[[ -f "${target}/PKGBUILD" ]] || {
+	[[ -f "${pkgbuild}" ]] || {
 		echo "update_package:: no PKGBUILD in ${target}" >&2
 		return 1
 	}
@@ -183,14 +145,13 @@ update_package() {
 		return 1
 	}
 
-	# shellcheck source=/dev/null
 	source "${fetcher}" || {
 		echo "update_package:: failed to source ${fetcher}" >&2
 		return 1
 	}
 
 	local local_pkgver
-	local_pkgver="$(read_pkgbuild_field "${target}/PKGBUILD" pkgver)" || return 1
+	local_pkgver="$(read_pkgbuild_field "${pkgbuild}" pkgver)" || return 1
 
 	local upstream
 	upstream="$(fetch_upstream)" || return 1
@@ -201,21 +162,29 @@ update_package() {
 		new_commit="${upstream#* }"
 	fi
 
+	local local_commit=""
 	if [[ -n "${new_commit}" ]]; then
-		local local_commit
-		local_commit="$(read_pkgbuild_field "${target}/PKGBUILD" _commit)" || return 1
+		local_commit="$(read_pkgbuild_field "${pkgbuild}" _commit)" || return 1
+	fi
 
-		if [[ "${local_pkgver}" == "${new_pkgver}" && "${local_commit}" == "${new_commit}" ]]; then
-			echo "update_package:: skipped ${target} (${local_pkgver} already latest)"
-			return 0
-		fi
-	elif [[ "${local_pkgver}" == "${new_pkgver}" ]]; then
+	if [[ "${local_pkgver}" == "${new_pkgver}" && "${local_commit}" == "${new_commit}" ]]; then
 		echo "update_package:: skipped ${target} (${local_pkgver} already latest)"
 		return 0
 	fi
 
 	echo "update_package:: ${target} ${local_pkgver} -> ${new_pkgver}"
-	apply_update "${target}" "${new_pkgver}" "${new_commit}" || return 1
+	set_pkgbuild_field "${pkgbuild}" pkgver "${new_pkgver}" || return 1
+	set_pkgbuild_field "${pkgbuild}" pkgrel 1 || return 1
+
+	if [[ -n "${new_commit}" ]]; then
+		set_pkgbuild_field "${pkgbuild}" _commit "${new_commit}" || return 1
+	fi
+
+	echo "update_package:: pinning ${target} (${new_pkgver})"
+	(cd "${target}" && updpkgsums --nocolor) || {
+		echo "update_package:: updpkgsums failed for ${target}" >&2
+		return 1
+	}
 
 	return 0
 }
