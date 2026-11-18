@@ -8,6 +8,7 @@ Local `PKGBUILD` workspace for binary repacks on Arch Linux.
 - `signal`: `signal-desktop-bin`, Signal Desktop
 - `google-chrome`: `google-chrome-bin`, Google Chrome
 - `mullavad`: `mullvad-vpn-bin`, Mullvad VPN
+- `synology-drive-client`: `synology-drive-client-bin`, Synology Drive Client
 
 ## Usage
 

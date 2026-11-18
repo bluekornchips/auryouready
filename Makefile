@@ -1,4 +1,4 @@
-PACKAGES := cursor signal google-chrome mullavad
+PACKAGES := cursor signal google-chrome mullavad synology-drive-client
 SELECTED := $(if $(strip $(PKG)),$(PKG),$(PACKAGES))
 CLEAN_DIRS := $(foreach p,$(SELECTED),$(p)/pkg $(p)/src)
 CLEAN_FILES := $(foreach p,$(SELECTED),$(p)/*.pkg.tar.* $(p)/*.deb $(p)/makepkg-*.log)
